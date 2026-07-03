@@ -1,0 +1,84 @@
+# crypto-paperbot configuration
+# All tunables live here. No magic numbers in code.
+#
+# PAPER TRADING ONLY. There is deliberately no section for API keys:
+# the bot only ever reads public market data and never places real orders.
+
+data:
+  # Exchange used by the live paper loop (recent candles only).
+  live_exchange: kraken
+  # Exchange used to backfill deep history. Kraken's public OHLC endpoint
+  # returns at most ~720 candles per timeframe, so multi-year backtests
+  # need a source with paginated history.
+  history_exchange: binance
+  symbols:
+    - BTC/USDT
+    - ETH/USDT
+  # Primary decision timeframe. The data layer can also cache 15m candles
+  # (see `entry_timeframe`) for finer-grained entries.
+  timeframe: 1h
+  entry_timeframe: 15m
+  cache_db: data/candles.sqlite
+
+costs:
+  # Kraken worst-case taker tier: 0.26% per side. Pessimistic on purpose.
+  taker_fee_pct: 0.26
+  # Flat slippage assumption per fill, applied against you on entry and exit.
+  slippage_pct: 0.05
+
+risk:
+  # Fraction of current equity risked per trade, sized off the stop distance.
+  risk_per_trade_pct: 1.0
+  # Hard cap on simultaneous open positions across all symbols/strategies.
+  max_positions: 2
+  # Kill switch: if equity falls this % below its all-time peak, flatten
+  # everything and halt.
+  kill_switch_drawdown_pct: 15.0
+
+paper:
+  starting_balance_usd: 10000.0
+  state_db: data/paper_state.sqlite
+  # How long after a candle closes before we act (lets the exchange finalize
+  # the bar and models decision latency).
+  candle_grace_seconds: 20
+
+backtest:
+  starting_balance_usd: 10000.0
+
+walkforward:
+  train_months: 12
+  test_months: 3
+  step_months: 3
+  # Objective used to pick parameters on the training window.
+  # One of: sharpe, profit_factor, return_over_maxdd
+  objective: return_over_maxdd
+  # Windows whose training period produced fewer trades than this fall back
+  # to default parameters (an optimizer fitting 5 trades is fitting noise).
+  min_train_trades: 10
+
+strategies:
+  trendfollow:
+    ema_fast: 50
+    ema_slow: 200
+    donchian_period: 20
+    atr_period: 14
+    atr_stop_mult: 3.0
+    # Walk-forward search grid. Keep small: big grids overfit.
+    grid:
+      donchian_period: [20, 40, 55]
+      atr_stop_mult: [2.0, 3.0, 4.0]
+  meanrevert:
+    ema_trend: 200
+    rsi_period: 2
+    rsi_entry: 10.0
+    rsi_exit: 70.0
+    atr_period: 14
+    atr_stop_mult: 2.0
+    take_profit_atr_mult: 2.0
+    grid:
+      rsi_entry: [5.0, 10.0, 15.0]
+      take_profit_atr_mult: [1.5, 2.0, 3.0]
+
+logging:
+  dir: logs
+  level: INFO

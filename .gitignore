@@ -1,0 +1,7 @@
+.venv/
+logs/
+__pycache__/
+*.egg-info/
+# The multi-year candle cache is big and rebuildable — don't commit it.
+# The paper state DB IS committed: it's how the hourly cloud job persists.
+data/candles.sqlite

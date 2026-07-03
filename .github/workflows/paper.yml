@@ -1,0 +1,53 @@
+# Hourly paper-trading tick + dashboard publish.
+#
+# Runs the simulation in GitHub's cloud so no local machine needs to stay
+# awake. Each run: fetch new closed candles from Kraken (public data, no
+# keys), update the paper account, regenerate the static dashboard, and
+# commit the state back to the repo. GitHub Pages serves docs/.
+#
+# Note: scheduled runs can lag 5-15 minutes — harmless here, because the
+# engine processes closed candles by timestamp, and any missed hours are
+# replayed in order on the next run.
+
+name: paper-tick
+
+on:
+  schedule:
+    - cron: "4 * * * *"   # a few minutes past each hour, after the candle closes
+  workflow_dispatch: {}    # manual "Run workflow" button
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paper-tick
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -e .
+
+      - name: Paper tick
+        run: bot paper --once
+
+      - name: Rebuild dashboard
+        run: bot dashboard --out docs
+
+      - name: Commit state and site
+        run: |
+          git config user.name "paperbot-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/paper_state.sqlite docs/
+          git diff --cached --quiet || git commit -m "paper tick $(date -u '+%Y-%m-%d %H:%M') UTC"
+          git push

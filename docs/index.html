@@ -47,17 +47,17 @@ pessimistically (0.26% taker fee + 0.05% slippage per fill).</div>
 
 <h1>crypto-paperbot</h1>
 <div class="sub">BTC/USDT &amp; ETH/USDT · 1h candles · strategies: trendfollow, meanrevert ·
-last updated 2026-07-03 15:36 UTC</div>
+last updated 2026-07-03 20:35 UTC</div>
 
 <div class="cards">
   <div class="card"><div class="label">Equity</div>
-    <div class="value">$9,981.39</div></div>
+    <div class="value">$9,998.71</div></div>
   <div class="card"><div class="label">Total return</div>
-    <div class="value neg">-0.19%</div></div>
+    <div class="value neg">-0.01%</div></div>
   <div class="card"><div class="label">Drawdown from peak</div>
-    <div class="value">0.2%</div></div>
+    <div class="value">0.0%</div></div>
   <div class="card"><div class="label">Max drawdown</div>
-    <div class="value">0.26%</div></div>
+    <div class="value">0.31%</div></div>
   <div class="card"><div class="label">Closed trades</div>
     <div class="value">0</div></div>
   <div class="card"><div class="label">Win rate</div>
@@ -67,7 +67,7 @@ last updated 2026-07-03 15:36 UTC</div>
 <div class="chart-wrap"><canvas id="eq" height="90"></canvas></div>
 
 <h2>Open positions</h2>
-<table><thead><tr><th>symbol</th><th>strategy</th><th>qty</th><th>entry</th><th>stop</th><th>opened (UTC)</th></tr></thead><tbody><tr><td>BTC/USDT</td><td>trendfollow</td><td class="num">0.104704</td><td class="num">$62,067.72</td><td class="num">$61,209.09</td><td>2026-07-03 12:00</td></tr><tr><td>ETH/USDT</td><td>trendfollow</td><td class="num">1.995503</td><td class="num">$1,741.58</td><td class="num">$1,708.03</td><td>2026-07-03 11:00</td></tr></tbody></table>
+<table><thead><tr><th>symbol</th><th>strategy</th><th>qty</th><th>entry</th><th>stop</th><th>opened (UTC)</th></tr></thead><tbody><tr><td>BTC/USDT</td><td>trendfollow</td><td class="num">0.104704</td><td class="num">$62,067.72</td><td class="num">$61,344.37</td><td>2026-07-03 12:00</td></tr><tr><td>ETH/USDT</td><td>trendfollow</td><td class="num">1.995503</td><td class="num">$1,741.58</td><td class="num">$1,711.80</td><td>2026-07-03 11:00</td></tr></tbody></table>
 
 <h2>Recent trades</h2>
 <div class="empty">none yet</div>
@@ -84,7 +84,7 @@ survivor-pair selection, overfitting risk).
 </footer>
 
 <script>
-const pts = [["2026-07-03 06:00", 10000.0], ["2026-07-03 07:00", 10000.0], ["2026-07-03 08:00", 9996.32], ["2026-07-03 09:00", 9996.32], ["2026-07-03 10:00", 9996.32], ["2026-07-03 11:00", 9988.8], ["2026-07-03 12:00", 9973.65], ["2026-07-03 13:00", 10000.89], ["2026-07-03 14:00", 9981.39]];
+const pts = [["2026-07-03 06:00", 10000.0], ["2026-07-03 07:00", 10000.0], ["2026-07-03 08:00", 9996.32], ["2026-07-03 09:00", 9996.32], ["2026-07-03 10:00", 9996.32], ["2026-07-03 11:00", 9988.8], ["2026-07-03 12:00", 9973.65], ["2026-07-03 13:00", 10000.89], ["2026-07-03 14:00", 9981.39], ["2026-07-03 15:00", 9969.78], ["2026-07-03 16:00", 9974.03], ["2026-07-03 17:00", 9983.51], ["2026-07-03 18:00", 9984.31], ["2026-07-03 19:00", 9998.71]];
 new Chart(document.getElementById("eq"), {
   type: "line",
   data: { labels: pts.map(p => p[0]), datasets: [{
